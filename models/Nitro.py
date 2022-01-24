@@ -1,4 +1,5 @@
 import ctypes
+import json
 import threading
 from random import randint
 from string import ascii_letters, digits
@@ -20,18 +21,35 @@ class Nitro:
       code += self.chars[rand]
     return code
 
-  def check_code(self, code: str, proxy: str) -> bool:
+  def check_code(self, code: str, proxy: str) -> int:
     proxies = {
         "https": f"http://{proxy}"
         }
 
     res = requests.get(
-        f"https://discordapp.com/api/v6/entitlements/gift-codes/{code}",
+        f"https://discord.com/api/v6/entitlements/gift-codes/{code}",
         proxies=proxies
         )
+    data = res.content
+    data = json.loads(data)
 
-    if res.status_code == 200: return True
-    return False
+    try:
+      res_code = int(data['code'])
+    except KeyError:
+      res_code = 1
+
+    if res_code == 10038:
+      perror(f"Invalid: {code}")
+    elif res_code == 1:
+      perror(f"Rate Limit: {code}")
+      with open("limited.txt", "a") as f:
+        f.write(f"https://discord.gift/{code}\n")
+    else:
+      psuccess(data)
+      with open("sus.txt", "a") as f:
+        f.write(f"{data}\n")
+    return res_code
+    
 
 class Generator(threading.Thread):
 
@@ -51,15 +69,7 @@ class Generator(threading.Thread):
       proxy_addr = str(proxy_addr)
 
       try:
-
         res = self.nitro.check_code(code, proxy_addr)
-        if res:
-          psuccess(f"Valid : {code}")
-          with open("Found!.txt", "a+") as f:
-            f.write(f"{code}\n")
-        else:
-          perror(f"Not Valid: {code}")
-
       except exceptions.ConnectTimeout:
         pass
       except exceptions.ProxyError:

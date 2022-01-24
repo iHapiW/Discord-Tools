@@ -8,7 +8,7 @@ sys.dont_write_bytecode = True
 from termcolor import colored
 import colorama
 
-from controller.Utils import pinput, psuccess, perror
+from controller.Utils import pinput, perror
 from controller import Nitro_gen
 
 def banner():
@@ -43,10 +43,12 @@ def main():
     sys.exit(1)
   if option == 1:
     Nitro_gen.run()
-    
+  else:
+    perror("Invalid Option")
 
 if __name__ == "__main__":
   try:
     main()
   except KeyboardInterrupt:
     perror("Exiting App...")
+    sys.exit()

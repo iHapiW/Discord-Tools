@@ -13,7 +13,7 @@ def run():
       thread = Generator(f"Thread {i}", nitro, proxy)
       thread.start()
       pool.append(thread)
-
+    
   except KeyboardInterrupt as K:
     raise K
 
