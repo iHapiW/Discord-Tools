@@ -69,7 +69,7 @@ class Generator(threading.Thread):
       proxy_addr = str(proxy_addr)
 
       try:
-        res = self.nitro.check_code(code, proxy_addr)
+        self.nitro.check_code(code, proxy_addr)
       except exceptions.ConnectTimeout:
         pass
       except exceptions.ProxyError:

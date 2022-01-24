@@ -9,7 +9,7 @@ class Proxy:
         if proxy != '':
           self.Proxies.append(proxy)
 
-  def get_proxy(self) -> str | None:
+  def get_proxy(self) -> str:
     last = len(self.Proxies)-1
     if last == -1: return None
     return self.Proxies[ randint(0, last) ]
